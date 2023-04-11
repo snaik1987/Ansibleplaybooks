@@ -1,0 +1,30 @@
+---
+- name: Check host health
+  hosts: localhost
+  become: true
+  gather_facts: true
+
+ 
+
+  tasks:
+    - name: Check CPU usage
+      shell: "top -bn1 | grep 'Cpu(s)' | sed 's/.*, *\\([0-9.]*\\)%* id.*/\\1/'"
+      register: cpu_usage
+
+ 
+
+    - name: Check memory usage
+      shell: "free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2 }'"
+      register: mem_usage
+
+ 
+
+    - name: Check disk usage
+      shell: "df -h / | awk 'NR==2{print $5}'"
+      register: disk_usage
+
+ 
+
+    - name: Display health check results
+      debug:
+        msg: "CPU usage: {{ cpu_usage.stdout }}% | Memory usage: {{ mem_usage.stdout }} | Disk usage: {{ disk_usage.stdout }}"
