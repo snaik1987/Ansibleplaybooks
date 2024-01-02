@@ -1,0 +1,6 @@
+#This playbook is for AD user vaidation
+
+- name: Get all SAM ID for the specified account using its Username
+  microsoft.ad.object_info:
+    identity: user
+    properties: 'USER ID'
